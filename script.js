@@ -73,6 +73,13 @@ let current = 0;
 let autoTimer;
 
 if (cards?.length) {
+  const setWidths = () => {
+    const w = track.parentElement.offsetWidth;
+    cards.forEach(c => { c.style.width = w + 'px'; });
+  };
+  setWidths();
+  window.addEventListener('resize', () => { setWidths(); goTo(current); }, { passive: true });
+
   cards.forEach((_, i) => {
     const dot = document.createElement('div');
     dot.className = 'recenze-dot' + (i === 0 ? ' active' : '');
