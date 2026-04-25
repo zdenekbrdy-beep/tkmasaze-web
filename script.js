@@ -73,6 +73,8 @@ let current = 0;
 let autoTimer;
 
 if (cards?.length) {
+  cards[0].classList.add('active');
+
   cards.forEach((_, i) => {
     const dot = document.createElement('div');
     dot.className = 'recenze-dot' + (i === 0 ? ' active' : '');
@@ -81,15 +83,13 @@ if (cards?.length) {
   });
 
   const goTo = (n) => {
+    cards[current].classList.remove('active');
     current = (n + cards.length) % cards.length;
-    const w = track.parentElement.offsetWidth;
-    track.style.transform = `translateX(-${current * w}px)`;
+    cards[current].classList.add('active');
     dotsContainer.querySelectorAll('.recenze-dot').forEach((d, i) => {
       d.classList.toggle('active', i === current);
     });
   };
-
-  window.addEventListener('resize', () => goTo(current), { passive: true });
 
   document.getElementById('recenzePrev')?.addEventListener('click', () => {
     goTo(current - 1);
@@ -115,11 +115,8 @@ if (cards?.length) {
   track.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive: true });
   track.addEventListener('touchend', e => {
     const diff = startX - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 50) {
-      goTo(current + (diff > 0 ? 1 : -1));
-      resetAuto();
-    }
-  });
+    if (Math.abs(diff) > 40) { goTo(current + (diff > 0 ? 1 : -1)); resetAuto(); }
+  }, { passive: true });
 }
 
 // Smooth anchor scroll with navbar offset
