@@ -73,19 +73,6 @@ let current = 0;
 let autoTimer;
 
 if (cards?.length) {
-  const getWidth = () => track.parentElement.offsetWidth;
-
-  const setWidths = () => {
-    const w = getWidth();
-    if (!w) return;
-    cards.forEach(c => { c.style.width = w + 'px'; });
-    track.style.transform = `translateX(-${current * w}px)`;
-  };
-
-  // Defer until after browser layout
-  requestAnimationFrame(() => requestAnimationFrame(setWidths));
-  window.addEventListener('resize', setWidths, { passive: true });
-
   cards.forEach((_, i) => {
     const dot = document.createElement('div');
     dot.className = 'recenze-dot' + (i === 0 ? ' active' : '');
@@ -95,12 +82,14 @@ if (cards?.length) {
 
   const goTo = (n) => {
     current = (n + cards.length) % cards.length;
-    const w = getWidth();
+    const w = track.parentElement.offsetWidth;
     track.style.transform = `translateX(-${current * w}px)`;
     dotsContainer.querySelectorAll('.recenze-dot').forEach((d, i) => {
       d.classList.toggle('active', i === current);
     });
   };
+
+  window.addEventListener('resize', () => goTo(current), { passive: true });
 
   document.getElementById('recenzePrev')?.addEventListener('click', () => {
     goTo(current - 1);
