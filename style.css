@@ -414,10 +414,8 @@ a { color: inherit; text-decoration: none; }
   text-transform: uppercase;
   color: var(--text-muted);
 }
-.stat-item svg {
+.stat-val svg {
   color: var(--gold);
-  width: 28px;
-  height: 28px;
 }
 
 /* =========================================
