@@ -73,12 +73,18 @@ let current = 0;
 let autoTimer;
 
 if (cards?.length) {
+  const getWidth = () => track.parentElement.offsetWidth;
+
   const setWidths = () => {
-    const w = track.parentElement.offsetWidth;
+    const w = getWidth();
+    if (!w) return;
     cards.forEach(c => { c.style.width = w + 'px'; });
+    track.style.transform = `translateX(-${current * w}px)`;
   };
-  setWidths();
-  window.addEventListener('resize', () => { setWidths(); goTo(current); }, { passive: true });
+
+  // Defer until after browser layout
+  requestAnimationFrame(() => requestAnimationFrame(setWidths));
+  window.addEventListener('resize', setWidths, { passive: true });
 
   cards.forEach((_, i) => {
     const dot = document.createElement('div');
@@ -89,8 +95,8 @@ if (cards?.length) {
 
   const goTo = (n) => {
     current = (n + cards.length) % cards.length;
-    const cardWidth = track.parentElement.offsetWidth;
-    track.style.transform = `translateX(-${current * cardWidth}px)`;
+    const w = getWidth();
+    track.style.transform = `translateX(-${current * w}px)`;
     dotsContainer.querySelectorAll('.recenze-dot').forEach((d, i) => {
       d.classList.toggle('active', i === current);
     });
