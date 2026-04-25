@@ -82,7 +82,8 @@ if (cards?.length) {
 
   const goTo = (n) => {
     current = (n + cards.length) % cards.length;
-    track.style.transform = `translateX(-${current * 100}%)`;
+    const cardWidth = track.parentElement.offsetWidth;
+    track.style.transform = `translateX(-${current * cardWidth}px)`;
     dotsContainer.querySelectorAll('.recenze-dot').forEach((d, i) => {
       d.classList.toggle('active', i === current);
     });
